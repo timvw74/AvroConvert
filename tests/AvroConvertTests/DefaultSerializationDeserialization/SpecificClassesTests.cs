@@ -1,6 +1,7 @@
 ﻿using AutoFixture;
 using SolTechnology.Avro;
 using Xunit;
+using xyz;
 
 namespace AvroConvertComponentTests.DefaultSerializationDeserialization
 {
@@ -71,6 +72,22 @@ namespace AvroConvertComponentTests.DefaultSerializationDeserialization
             Assert.Equal(testObject.Five.Day, deserialized.Five.Day);
             Assert.Equal(testObject.Five.Month, deserialized.Five.Month);
             Assert.Equal(testObject.Five.Year, deserialized.Five.Year);
+        }
+
+        [Fact]
+        public void Component_ISpecificRecord_ResultIsTheSameAsInput()
+        {
+            //Arrange
+            var testRecord = _fixture.Create<EmailMessage>();
+
+            //Act
+            var serialized = AvroConvert.Serialize(testRecord);
+
+            var deserialized = AvroConvert.Deserialize<EmailMessage>(serialized);
+
+            //Assert
+            Assert.NotNull(serialized);
+            Assert.NotNull(deserialized);
         }
     }
 }
