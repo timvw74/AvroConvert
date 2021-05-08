@@ -7,8 +7,21 @@ namespace AvroConvertComponentTests
 {
     public class DeserializeTests
     {
-        private readonly byte[] _avroBytes = System.IO.File.ReadAllBytes("example2.avro");
+        private readonly byte[] _avroBytes = System.IO.File.ReadAllBytes("avro.avro");
 
+
+        [Fact]
+        public void Issue38()
+        {
+
+            string schema =
+                "{ \"type\":\"record\", \"name\":\"DepartmentAVRO\", \"namespace\":\"models.mvp.Department\", \"fields\":[ {\"name\":\"struct_code\",\"type\":\"int\",\"doc\":\"Идентификатор подразделения\"}, {\"name\":\"firm_id\",\"type\":\"int\",\"doc\":\"Идентификатор организации\"}, { \"name\":\"struct_parent\",\"type\":[\"int\",\"null\"],\"doc\":\"Идентификатор родительского подразделения\"}, { \"name\":\"struct_name\",\"type\":\"string\",\"doc\":\"Наименование подразделения\"}, { \"name\":\"financial_short_name\",\"type\":\"string\",\"doc\":\"Код ЦФО\"}, { \"name\":\"start_date\",\"type\":[\"null\", { \"type\": \"long\", \"logicalType\":\"date\"}],\"doc\":\"Дата начала действия\"}, { \"name\":\"end_date\",\"type\":[\"null\", { \"type\": \"long\", \"logicalType\":\"date\"}],\"doc\":\"Дата окончания действия\"} ]}";
+
+            //Act
+            var result = AvroConvert.DeserializeHeadless<DepartmentAVRO>(_avroBytes, schema);
+            //Assert
+            var x = 1;
+        }
 
         [Fact]
         public void Deserialize_CustomSchema_OnlyValuesFromCustomSchemaAreReturned()

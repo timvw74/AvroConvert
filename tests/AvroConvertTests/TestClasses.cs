@@ -17,6 +17,17 @@ namespace AvroConvertComponentTests
         public string favorite_color { get; set; }
     }
 
+    public class DepartmentAVRO
+    {
+        public int struct_code { get; set; }
+        public int firm_id { get; set; }
+        public int? struct_parent { get; set; }
+        public string struct_name { get; set; }
+        public string financial_short_name { get; set; }
+        public DateTime? start_date { get; set; }
+        public DateTime? end_date { get; set; }
+    }
+
     [Equals(DoNotAddEqualityOperators = true)]
     public class UserNameClass
     {
