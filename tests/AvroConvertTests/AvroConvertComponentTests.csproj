@@ -37,6 +37,15 @@
     <Content Include="example2.avro">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Update="AvroRows">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="AvroSchema.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="bq-sample">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="userdata1.avro">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

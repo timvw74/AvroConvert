@@ -1,0 +1,38 @@
+{
+  "type": "record",
+  "name": "__root__",
+  "fields": [
+    {
+      "name": "tracker_id",
+      "type": "string"
+    },
+    {
+      "name": "latitude",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "name": "longitude",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "name": "datetime",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "name": "speed",
+      "type": [
+        "null",
+        "double"
+      ]
+    }
+  ]
+}
