@@ -24,7 +24,7 @@ namespace GrandeBenchmark
             }
         }
 
-        private const int N = 200;
+        private const int N = 1000;
         private readonly User[] data;
 
         public ImplementationsBattleRoyal()
@@ -32,8 +32,7 @@ namespace GrandeBenchmark
             Fixture fixture = new Fixture();
             data = fixture
                 .Build<User>()
-                .With(c => c.Offerings, fixture.CreateMany<Offering>(N).ToList())
-                .CreateMany(N)
+                .CreateMany(N)  
                 .ToArray();
         }
 
@@ -48,20 +47,20 @@ namespace GrandeBenchmark
             File.WriteAllText(path, ConstructSizeLog(Encoding.UTF8.GetBytes(serialized).Length));
         }
 
-        [Benchmark]
-        public void Json_Gzip()
-        {
-            var serialized = JsonConvert.SerializeObject(data);
-            var serializedBytes = Encoding.UTF8.GetBytes(serialized);
-            var serializedGzip = GzipJson(serializedBytes);
-
-            var deserializedBytes = UnGzipJson(serializedGzip);
-            JsonConvert.DeserializeObject<List<User>>(Encoding.UTF8.GetString(deserializedBytes));
-
-
-            var path = $"C:\\test\\disk-size.{nameof(Json_Gzip).ToLower()}.txt";
-            File.WriteAllText(path, ConstructSizeLog(serializedGzip.Length));
-        }
+        // [Benchmark]
+        // public void Json_Gzip()
+        // {
+        //     var serialized = JsonConvert.SerializeObject(data);
+        //     var serializedBytes = Encoding.UTF8.GetBytes(serialized);
+        //     var serializedGzip = GzipJson(serializedBytes);
+        //
+        //     var deserializedBytes = UnGzipJson(serializedGzip);
+        //     JsonConvert.DeserializeObject<List<User>>(Encoding.UTF8.GetString(deserializedBytes));
+        //
+        //
+        //     var path = $"C:\\test\\disk-size.{nameof(Json_Gzip).ToLower()}.txt";
+        //     File.WriteAllText(path, ConstructSizeLog(serializedGzip.Length));
+        // }
 
         [Benchmark]
         public void Json_Brotli()
@@ -88,15 +87,15 @@ namespace GrandeBenchmark
             File.WriteAllText(path, ConstructSizeLog(serialized.Length));
         }
 
-        [Benchmark]
-        public void Avro_Gzip()
-        {
-            var serialized = AvroConvert.Serialize(data, CodecType.GZip);
-            AvroConvert.Deserialize<List<User>>(serialized);
-
-            var path = $"C:\\test\\disk-size.{nameof(Avro_Gzip).ToLower()}.txt";
-            File.WriteAllText(path, ConstructSizeLog(serialized.Length));
-        }
+        // [Benchmark]
+        // public void Avro_Gzip()
+        // {
+        //     var serialized = AvroConvert.Serialize(data, CodecType.GZip);
+        //     AvroConvert.Deserialize<List<User>>(serialized);
+        //
+        //     var path = $"C:\\test\\disk-size.{nameof(Avro_Gzip).ToLower()}.txt";
+        //     File.WriteAllText(path, ConstructSizeLog(serialized.Length));
+        // }
 
         [Benchmark]
         public void Avro_Brotli()

@@ -5,6 +5,8 @@ using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using AutoFixture;
+using Azure.Storage.Blobs;
+using BrotliSharpLib;
 using GrandeBenchmark;
 using Newtonsoft.Json;
 using SolTechnology.Avro;
@@ -17,20 +19,46 @@ namespace FielSizeBenchmark
         {
             Console.WriteLine("Hello World!");
 
+            var x = AvroConvert.GenerateSchema(typeof(User));
 
 
-            var data100 = BuildData(1);
-            var data1k = BuildData(10);
-            var data10k = BuildData(100);
-            var data100k = BuildData(1000);
-            var data1m = BuildData(10000);
+            try
+            {
+                BlobContainerClient blobContainerClient = new BlobContainerClient("UseDevelopmentStorage=true", "sample-container");
+                blobContainerClient.CreateIfNotExists();
+
+                var data100 = BuildData(100);
+
+                blobContainerClient.WriteItemToBlob("dupa", data100);
+
+                var result = blobContainerClient.ReadItemFromBlob<List<User>>("dupa");
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+
+            
 
 
-            DoIT(data100);
-            DoIT(data1k);
-            DoIT(data10k);
-            DoIT(data100k);
-            DoIT(data1m);
+            // var data1 = BuildData(1);
+            // var data10 = BuildData(10);
+            // var data100 = BuildData(100);
+            // var data1k = BuildData(1000);
+            // var data10k = BuildData(10000);
+            // var data100k = BuildData(100000);
+            // var data1m = BuildData(1000000);
+            //
+            //
+            // DoIT(data1, nameof(data1));
+            // DoIT(data10, nameof(data10));
+            // DoIT(data100, nameof(data100));
+            // DoIT(data1k, nameof(data1k));
+            // DoIT(data10k, nameof(data10k));
+            // DoIT(data100k, nameof(data100k));
+            // DoIT(data1m, nameof(data1m));
 
 
 
@@ -38,9 +66,9 @@ namespace FielSizeBenchmark
 
         }
 
-        private static void DoIT(IEnumerable<User> data100)
+        private static void DoIT(IEnumerable<User> data100, string name)
         {
-            Console.WriteLine("---------------------------------------------------------");
+            Console.WriteLine($"------------------------{name}---------------------------------");
 
             var json100 = JsonConvert.SerializeObject(data100);
             var serializedBytes100 = Encoding.UTF8.GetBytes(json100);
@@ -49,7 +77,11 @@ namespace FielSizeBenchmark
 
             Console.WriteLine("Json Gzip " + GzipJson(serializedBytes100).Length);
 
+            Console.WriteLine("Json Brotli " + BrotliJson(serializedBytes100).Length);
+
             Console.WriteLine("Avro " + AvroConvert.Serialize(data100).Length);
+
+            Console.WriteLine("Avro Gzip " + AvroConvert.Serialize(data100, CodecType.GZip).Length);
 
             Console.WriteLine("Avro Brotli " + AvroConvert.Serialize(data100, CodecType.Brotli).Length);
         }
@@ -61,7 +93,6 @@ namespace FielSizeBenchmark
 
             return fixture
                 .Build<User>()
-                .With(c => c.Offerings, fixture.CreateMany<Offering>(N).ToList())
                 .CreateMany(N)
                 .ToArray();
         }
@@ -75,6 +106,11 @@ namespace FielSizeBenchmark
                 zipStream.Close();
                 return compressedStream.ToArray();
             }
+        }
+
+        internal static byte[] BrotliJson(byte[] uncompressedData)
+        {
+            return Brotli.CompressBuffer(uncompressedData, 0, uncompressedData.Length, 4);
         }
     }
 }
